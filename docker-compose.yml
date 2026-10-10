@@ -1,0 +1,29 @@
+services:
+  app:
+    build:
+      context: ./application
+    container_name: observability-demo-api
+    ports:
+      - "8080:8080"
+    environment:
+      OTEL_SERVICE_NAME: observability-demo-api
+    depends_on:
+      otel-collector:
+        condition: service_started
+    networks:
+      - observability-network
+
+  otel-collector:
+    build:
+      context: ./observability
+    container_name: observability-demo-collector
+    command:
+      - "--config=/etc/otelcol-contrib/config.yaml"
+    ports:
+      - "13133:13133"
+    networks:
+      - observability-network
+
+networks:
+  observability-network:
+    driver: bridge
