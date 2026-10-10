@@ -218,3 +218,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Maven build output
+application/target/
+
+# Downloaded OpenTelemetry agent
+application/opentelemetry-javaagent.jar
+
+# Local environment files
+.env
+.env.*
+!.env.example
