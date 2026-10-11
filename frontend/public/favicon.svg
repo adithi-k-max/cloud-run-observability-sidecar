@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background tile -->
+  <rect width="32" height="32" rx="4" fill="#10110F"/>
+  <!-- T: horizontal bar -->
+  <rect x="4" y="8" width="24" height="2.5" rx="1" fill="#D7FF64"/>
+  <!-- T: vertical stem -->
+  <rect x="13.5" y="8" width="2.5" height="16" rx="1" fill="#D7FF64"/>
+  <!-- T: mid crossbar (subtle) -->
+  <rect x="4" y="13" width="11" height="2" rx="1" fill="#D7FF64" opacity="0.5"/>
+  <!-- F: vertical bar (info blue) -->
+  <rect x="20" y="8" width="2.5" height="16" rx="1" fill="#77D9F7"/>
+  <!-- F: mid crossbar -->
+  <rect x="20" y="14" width="5" height="2" rx="1" fill="#77D9F7" opacity="0.6"/>
+</svg>

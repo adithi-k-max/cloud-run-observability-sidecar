@@ -1,7 +1,8 @@
 services:
   app:
     build:
-      context: ./application
+      context: .
+      dockerfile: application/Dockerfile
     container_name: observability-demo-api
     ports:
       - "8080:8080"

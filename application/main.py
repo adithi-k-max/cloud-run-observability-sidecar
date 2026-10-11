@@ -1,6 +1,11 @@
+import os
 import logging
 import time
 from contextlib import asynccontextmanager
+
+from pathlib import Path
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from fastapi import FastAPI, HTTPException, Request
 from opentelemetry import metrics, trace
@@ -37,6 +42,14 @@ resource = Resource.create(
     }
 )
 
+# --------------------------------------------------
+# OpenTelemetry exporter configuration
+# --------------------------------------------------
+
+OTEL_EXPORTER_OTLP_ENDPOINT = os.getenv(
+    "OTEL_EXPORTER_OTLP_ENDPOINT",
+    "http://otel-collector:4317",
+)
 
 # --------------------------------------------------
 # Distributed tracing
@@ -45,7 +58,7 @@ resource = Resource.create(
 trace_provider = TracerProvider(resource=resource)
 
 trace_exporter = OTLPSpanExporter(
-    endpoint="http://otel-collector:4317",
+    endpoint=OTEL_EXPORTER_OTLP_ENDPOINT,
     insecure=True,
 )
 
@@ -63,7 +76,7 @@ tracer = trace.get_tracer("observability-demo")
 # --------------------------------------------------
 
 metric_exporter = OTLPMetricExporter(
-    endpoint="http://otel-collector:4317",
+    endpoint=OTEL_EXPORTER_OTLP_ENDPOINT,
     insecure=True,
 )
 
@@ -138,6 +151,32 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+# --------------------------------------------------
+# TRACEFORGE frontend
+# --------------------------------------------------
+
+FRONTEND_DIR = Path(__file__).parent / "frontend-dist"
+ASSETS_DIR = FRONTEND_DIR / "assets"
+
+if ASSETS_DIR.is_dir():
+    app.mount(
+        "/assets",
+        StaticFiles(directory=ASSETS_DIR),
+        name="frontend-assets",
+    )
+
+
+@app.get("/", include_in_schema=False)
+def serve_frontend():
+    index_file = FRONTEND_DIR / "index.html"
+
+    if index_file.is_file():
+        return FileResponse(index_file)
+
+    return {
+        "message": "Observability Sidecar Demo",
+        "status": "running",
+    }
 
 
 # --------------------------------------------------
